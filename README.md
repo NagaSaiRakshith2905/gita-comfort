@@ -52,6 +52,11 @@ Follow these steps to run the project locally:
 
     Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
 
+### Environment Variables
+
+- `FEEDBACK_FORM_URL` (optional): Full URL used for the **Share Feedback** link.
+- `FEEDBACK_FORM_ALLOWED_DOMAINS` (optional): Comma-separated domain allowlist for `FEEDBACK_FORM_URL`.
+
 ## Project Structure
 
 - `src/app`: Main application routes and pages.
