@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { comfortMessages } from "@/lib/comfort-messages";
 
 export const EMOTIONS = [
   "happy",
@@ -19,21 +20,18 @@ type Verse = {
   shlokaNumber: number;
   shloka: string;
   simpleExplanation: string;
-  briefExplanation: string;
+  briefTakeaway: string;
   emotion: string;
   keywords: string[];
 };
 
 type EmotionProfile = {
-  comfortMessage: string;
   include: string[];
   fallbackChapter: number;
 };
 
 const profiles: Record<Emotion, EmotionProfile> = {
   happy: {
-    comfortMessage:
-      "Joy becomes deeper when it is grounded in gratitude, balance, and humility.",
     include: [
       "joy",
       "happiness",
@@ -49,8 +47,6 @@ const profiles: Record<Emotion, EmotionProfile> = {
     fallbackChapter: 12,
   },
   sad: {
-    comfortMessage:
-      "Your pain is seen. The Gita reminds us that sorrow can be transformed through wisdom and right action.",
     include: [
       "grief",
       "sorrow",
@@ -66,8 +62,6 @@ const profiles: Record<Emotion, EmotionProfile> = {
     fallbackChapter: 2,
   },
   laziness: {
-    comfortMessage:
-      "Even a small sincere step in action is powerful. Start with one disciplined action now.",
     include: [
       "duty",
       "action",
@@ -83,8 +77,6 @@ const profiles: Record<Emotion, EmotionProfile> = {
     fallbackChapter: 3,
   },
   protection: {
-    comfortMessage:
-      "You are not alone in your struggle. Trust, surrender, and inner strength offer protection.",
     include: [
       "protect",
       "refuge",
@@ -100,8 +92,6 @@ const profiles: Record<Emotion, EmotionProfile> = {
     fallbackChapter: 18,
   },
   anger: {
-    comfortMessage:
-      "Anger loses its force when awareness, restraint, and clarity return.",
     include: [
       "anger",
       "desire",
@@ -117,8 +107,6 @@ const profiles: Record<Emotion, EmotionProfile> = {
     fallbackChapter: 2,
   },
   peace: {
-    comfortMessage:
-      "Peace grows when the mind is steady, desires are moderated, and the heart rests in the Divine.",
     include: [
       "peace",
       "calm",
@@ -134,8 +122,6 @@ const profiles: Record<Emotion, EmotionProfile> = {
     fallbackChapter: 6,
   },
   loneliness: {
-    comfortMessage:
-      "You are deeply connected to the Divine and to all beings, even when you feel isolated.",
     include: [
       "all beings",
       "self",
@@ -151,8 +137,6 @@ const profiles: Record<Emotion, EmotionProfile> = {
     fallbackChapter: 9,
   },
   anxious: {
-    comfortMessage:
-      "Bring your attention back to the present duty. Clarity and trust reduce anxiety.",
     include: [
       "fear",
       "doubt",
@@ -175,9 +159,7 @@ function loadVerses(): Verse[] {
   if (cachedVerses) return cachedVerses;
 
   const candidatePaths = [
-    path.join(process.cwd(), "data-set", "bhagavad_gita_700_english_v2.json"),
-    path.join(process.cwd(), "data-set", "bhagavad_gita_700_english.json"),
-    path.join(process.cwd(), "public", "data-set", "bhagavad_gita_700_english_v2.json"),
+    path.join(process.cwd(), "public", "data-set", "bhagavad_gita_700_english_v3.json"),
   ];
 
   const filePath = candidatePaths.find((candidate) => fs.existsSync(candidate));
@@ -197,7 +179,7 @@ function scoreVerse(verse: Verse, emotion: Emotion): number {
   const haystack = [
     verse.shloka,
     verse.simpleExplanation,
-    verse.briefExplanation,
+    verse.briefTakeaway,
     verse.emotion,
     verse.keywords.join(" "),
   ]
@@ -215,11 +197,8 @@ function scoreVerse(verse: Verse, emotion: Emotion): number {
   // Favor concise, easier-to-read verses.
   if (verse.shloka.length <= 260) score += 2;
 
-  // Gentle boost when our dataset's own emotional tag aligns.
-  if (emotion === "peace" && verse.emotion.toLowerCase().includes("peace")) score += 4;
-  if (emotion === "sad" && verse.emotion.toLowerCase().includes("distress")) score += 4;
-  if (emotion === "anger" && verse.emotion.toLowerCase().includes("resolve")) score += 2;
-  if (emotion === "anxious" && verse.emotion.toLowerCase().includes("reflection")) score += 2;
+  // Strong boost when the dataset emotion exactly matches the requested emotion.
+  if (verse.emotion.toLowerCase() === emotion) score += 8;
 
   // Chapter-level guidance fallback alignment.
   if (verse.chapter === profile.fallbackChapter) score += 3;
@@ -234,19 +213,27 @@ function pickFromTop<T>(items: T[], topN: number): T {
 
 export function getMessageForEmotion(emotion: Emotion) {
   const verses = loadVerses();
-  const scored = verses
+  const emotionMatched = verses.filter((verse) => verse.emotion.toLowerCase() === emotion);
+  const candidateVerses = emotionMatched.length > 0 ? emotionMatched : verses;
+
+  const scored = candidateVerses
     .map((verse) => ({ verse, score: scoreVerse(verse, emotion) }))
     .sort((a, b) => b.score - a.score);
 
   const picked = pickFromTop(scored, 25).verse;
+  const messages = comfortMessages[emotion];
+  const pickedComfortMessage = pickFromTop(
+    messages,
+    messages.length,
+  );
 
   return {
     emotion,
-    comfortMessage: profiles[emotion].comfortMessage,
+    comfortMessage: pickedComfortMessage,
     reference: `Chapter ${picked.chapter}, Shloka ${picked.shlokaNumber}`,
     verse: picked.shloka,
     simpleExplanation: picked.simpleExplanation,
-    briefExplanation: picked.briefExplanation,
+    briefTakeaway: picked.briefTakeaway,
     keywords: picked.keywords,
   };
 }
