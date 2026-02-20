@@ -5,6 +5,10 @@ import { isEmotion, type Emotion } from "@/lib/gita";
 
 export const dynamic = "force-dynamic";
 
+const emotionAliases = {
+  motivation: "laziness",
+} as const;
+
 type PageProps = {
   params: Promise<{
     emotion: string;
@@ -15,8 +19,10 @@ function prettyEmotion(emotion: string) {
   return emotion[0].toUpperCase() + emotion.slice(1);
 }
 
+type ThemeEmotion = Emotion | "motivation";
+
 const emotionTheme: Record<
-  Emotion,
+  ThemeEmotion,
   { bg: string; accent: string; badge: string; bar: string }
 > = {
   happy: {
@@ -67,17 +73,32 @@ const emotionTheme: Record<
     badge: "bg-orange-100/80 text-orange-800",
     bar: "from-orange-400 via-orange-300 to-orange-200",
   },
+  motivation: {
+    bg: "bg-emotion-motivation",
+    accent: "text-orange-700",
+    badge: "bg-orange-100/80 text-orange-800",
+    bar: "from-orange-600 via-amber-400 to-amber-200",
+  },
 };
 
 export default async function MessagePage({ params }: PageProps) {
   const { emotion } = await params;
+  const normalizedEmotion = emotion.toLowerCase();
+  const resolvedEmotion =
+    emotionAliases[normalizedEmotion as keyof typeof emotionAliases] ?? normalizedEmotion;
+  const displayEmotion = normalizedEmotion === "motivation" ? "motivation" : resolvedEmotion;
+  const themeEmotion: ThemeEmotion = normalizedEmotion === "motivation" ? "motivation" : resolvedEmotion;
+  const emotionDescription =
+    themeEmotion === "motivation"
+      ? "When you need momentum, start with one purposeful step."
+      : null;
 
-  if (!isEmotion(emotion)) {
+  if (!isEmotion(resolvedEmotion)) {
     notFound();
   }
 
-  const data = await getMessageAction(emotion);
-  const theme = emotionTheme[emotion];
+  const data = await getMessageAction(normalizedEmotion);
+  const theme = emotionTheme[themeEmotion];
 
   return (
     <main className={`${theme.bg} relative flex min-h-svh flex-col px-4 py-5 sm:min-h-screen sm:px-8 sm:py-8`}>
@@ -103,8 +124,13 @@ export default async function MessagePage({ params }: PageProps) {
         {/* Title */}
         <section className="mx-auto mb-5 flex max-w-2xl flex-col items-center gap-2 text-center sm:mb-14 sm:gap-4">
           <h1 className="font-serif text-2xl font-semibold tracking-tight text-stone-800 sm:text-[2.5rem]">
-            Guidance for <span className={theme.accent}>{prettyEmotion(emotion)}</span>
+            Guidance for <span className={theme.accent}>{prettyEmotion(displayEmotion)}</span>
           </h1>
+          {emotionDescription ? (
+            <p className="text-[0.8rem] leading-relaxed text-stone-500 sm:text-sm">
+              {emotionDescription}
+            </p>
+          ) : null}
           <div className="mx-auto flex items-center justify-center gap-2">
             <span className={`rounded-full px-3 py-1 text-[0.7rem] font-medium sm:text-xs ${theme.badge}`}>
               {data.reference}

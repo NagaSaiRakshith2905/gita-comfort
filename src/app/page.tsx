@@ -5,8 +5,8 @@ const emotionMeta: Record<Emotion, { emoji: string; subtitle: string; border: st
   happy: {
     emoji: "☀️",
     subtitle: "Celebrate with wisdom",
-    border: "border-amber-200 hover:border-amber-300",
-    accent: "bg-amber-400",
+    border: "border-yellow-200 hover:border-yellow-300",
+    accent: "bg-yellow-400",
   },
   sad: {
     emoji: "🌧️",
@@ -101,6 +101,21 @@ export default function Home() {
               </Link>
             );
           })}
+          <Link
+            href="/message/motivation"
+            className="group relative col-span-2 flex w-full flex-col items-center justify-center gap-1 overflow-hidden rounded-xl border border-orange-200 bg-white p-3.5 text-center shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:border-orange-300 hover:shadow-md sm:gap-3 sm:rounded-3xl sm:p-7 lg:col-span-4"
+          >
+            <div className="absolute inset-x-0 top-0 h-0.5 bg-orange-600 opacity-60 transition-opacity group-hover:opacity-100 sm:h-1" />
+            <span className="text-xl transition-transform duration-300 group-hover:scale-110 sm:text-3xl">
+              🎯
+            </span>
+            <span className="text-xs font-semibold tracking-wide text-stone-700 sm:text-base">
+              Motivation
+            </span>
+            <span className="hidden text-[0.65rem] leading-tight text-stone-400 sm:block sm:text-xs">
+              Need a push forward? Try this.
+            </span>
+          </Link>
         </div>
 
         {/* Bottom ornament */}
