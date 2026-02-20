@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getMessageAction } from "@/app/actions";
+import { getFeedbackFormUrl } from "@/lib/feedback";
 import { isEmotion, type Emotion } from "@/lib/gita";
+import { Button } from "@/components/ui/button";
+import { ShareIcon } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -82,6 +85,7 @@ const emotionTheme: Record<
 };
 
 export default async function MessagePage({ params }: PageProps) {
+  const feedbackFormUrl = getFeedbackFormUrl();
   const { emotion } = await params;
   const normalizedEmotion = emotion.toLowerCase();
   const resolvedEmotion =
@@ -104,21 +108,27 @@ export default async function MessagePage({ params }: PageProps) {
     <main className={`${theme.bg} relative flex min-h-svh flex-col px-4 py-5 sm:min-h-screen sm:px-8 sm:py-8`}>
       <div className="flex flex-1 flex-col justify-center">
         {/* Top bar */}
-        <nav className="relative mx-auto mb-5 flex w-full max-w-2xl items-center justify-between sm:mb-14">
-          <div>
-            <p className="text-[0.65rem] font-medium tracking-[0.25em] text-stone-400 sm:text-xs">
-              GitaComforts.me
-            </p>
-          </div>
+        <nav className="relative mx-auto mb-5 grid grid-cols-4 w-full max-w-2xl items-center sm:mb-14">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white/80 px-4 py-1.5 text-xs font-medium text-stone-500 shadow-xs backdrop-blur-sm transition-all hover:border-stone-300 hover:text-stone-700 hover:shadow-sm sm:text-sm"
+            className="inline-flex items-center gap-1.5 col-span-1 w-fit rounded-full border border-stone-200 bg-white/80 px-4 py-1.5 text-xs font-medium text-stone-500 shadow-xs backdrop-blur-sm transition-all hover:border-stone-300 hover:text-stone-700 hover:shadow-sm sm:text-sm"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
+            <span className="hidden sm:inline">
             Back
+
+            </span>
           </Link>
+          <div className="flex-1 col-span-2">
+            <p className="text-[0.65rem] text-center font-medium tracking-[0.25em] text-stone-400 sm:text-xs">
+              GitaComforts.me
+            </p>
+          </div>
+          <div className="col-span-1">
+
+          </div>
         </nav>
 
         {/* Title */}
@@ -207,7 +217,7 @@ export default async function MessagePage({ params }: PageProps) {
         </article>
       </div>
 
-      <footer className="mt-auto mb-2 pt-6 text-center sm:mb-4">
+      <footer className="w-full max-w-2xl mx-auto flex items-center justify-between ">
         <p className="text-[0.65rem] tracking-wide text-stone-400 sm:text-xs">
           Developed by:{" "}
           <a
@@ -219,6 +229,18 @@ export default async function MessagePage({ params }: PageProps) {
             n-s-r.dev
           </a>
         </p>
+        {feedbackFormUrl ? (
+          <Link
+            href={feedbackFormUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-s-event="feedback_form_opened"
+            data-s-event-props="source=home"
+            className="font-medium underline-offset-2 transition-colors hover:text-stone-700 hover:underline text-[0.65rem] tracking-wide text-stone-400 sm:text-xs"
+          >
+            Share Feedback
+          </Link>
+        ) : null}
       </footer>
     </main>
   );

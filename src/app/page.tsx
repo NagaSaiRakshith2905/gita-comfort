@@ -1,7 +1,11 @@
 import Link from "next/link";
+import { getFeedbackFormUrl } from "@/lib/feedback";
 import { EMOTIONS, type Emotion } from "@/lib/gita";
 
-const emotionMeta: Record<Emotion, { emoji: string; subtitle: string; border: string; accent: string }> = {
+const emotionMeta: Record<
+  Emotion,
+  { emoji: string; subtitle: string; border: string; accent: string }
+> = {
   happy: {
     emoji: "☀️",
     subtitle: "Celebrate with wisdom",
@@ -57,6 +61,8 @@ function prettyEmotion(emotion: Emotion) {
 }
 
 export default function Home() {
+  const feedbackFormUrl = getFeedbackFormUrl();
+
   return (
     <main className="bg-warm-soft relative flex min-h-svh flex-col px-3 py-6 sm:min-h-screen sm:px-5 sm:py-8">
       <div className="flex flex-1 flex-col justify-center gap-4 sm:gap-10">
@@ -88,7 +94,9 @@ export default function Home() {
                 className={`group relative flex flex-col items-center justify-center gap-1 overflow-hidden rounded-xl border bg-white p-3.5 shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-md sm:gap-3 sm:rounded-3xl sm:p-7 ${meta.border}`}
               >
                 {/* Colored top accent bar */}
-                <div className={`absolute inset-x-0 top-0 h-0.5 sm:h-1 ${meta.accent} opacity-60 transition-opacity group-hover:opacity-100`} />
+                <div
+                  className={`absolute inset-x-0 top-0 h-0.5 sm:h-1 ${meta.accent} opacity-60 transition-opacity group-hover:opacity-100`}
+                />
                 <span className="text-xl transition-transform duration-300 group-hover:scale-110 sm:text-3xl">
                   {meta.emoji}
                 </span>
@@ -119,7 +127,7 @@ export default function Home() {
         </div>
 
         {/* Bottom ornament */}
-        <div className="mt-8 flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-1">
           <div className="ornament mx-auto" />
           <p className="text-center text-[0.6rem] tracking-widest text-stone-300 uppercase sm:text-[0.7rem]">
             Wisdom from the Bhagavad Gita
@@ -127,7 +135,7 @@ export default function Home() {
         </div>
       </div>
 
-      <footer className="mt-auto mb-2 pt-6 text-center sm:mb-4">
+      <footer className="w-full max-w-3xl mx-auto flex items-center justify-between ">
         <p className="text-[0.65rem] tracking-wide text-stone-400 sm:text-xs">
           Developed by:{" "}
           <a
@@ -139,6 +147,18 @@ export default function Home() {
             n-s-r.dev
           </a>
         </p>
+        {feedbackFormUrl ? (
+          <Link
+            href={feedbackFormUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-s-event="feedback_form_opened"
+            data-s-event-props="source=home"
+            className="font-medium underline-offset-2 transition-colors hover:text-stone-700 hover:underline text-[0.65rem] tracking-wide text-stone-400 sm:text-xs"
+          >
+            Share Feedback
+          </Link>
+        ) : null}
       </footer>
     </main>
   );
