@@ -14,7 +14,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "GitaComforts.me — Bhagavad Gita Companion",
+  title: "GitaComforts.me | Bhagavad Gita Companion",
   description:
     "Select your current emotion and receive a comforting Bhagavad Gita message.",
 };
