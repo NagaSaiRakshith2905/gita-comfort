@@ -57,7 +57,7 @@ Follow these steps to run the project locally:
 - `src/app`: Main application routes and pages.
     - `page.tsx`: The home page allowing emotion selection.
     - `message/[emotion]/page.tsx`: The dynamic page displaying the verse for a selected emotion.
-    - `api/message/route.ts`: API route handler.
+    - `actions.ts`: Server actions for fetching emotion-based guidance.
 - `src/lib/gita.ts`: Core logic for mapping emotions to verses and handling data.
 - `src/components`: Reusable UI components.
 - `data-set`: JSON data containing the Bhagavad Gita verses.

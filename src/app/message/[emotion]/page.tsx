@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getMessageForEmotion, isEmotion, type Emotion } from "@/lib/gita";
+import { getMessageAction } from "@/app/actions";
+import { isEmotion, type Emotion } from "@/lib/gita";
 
 export const dynamic = "force-dynamic";
 
@@ -75,7 +76,7 @@ export default async function MessagePage({ params }: PageProps) {
     notFound();
   }
 
-  const data = getMessageForEmotion(emotion);
+  const data = await getMessageAction(emotion);
   const theme = emotionTheme[emotion];
 
   return (
