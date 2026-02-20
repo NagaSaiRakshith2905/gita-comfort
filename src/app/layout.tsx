@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import Analytics from "./analytics";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -13,7 +14,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Gita Comfort — Bhagavad Gita Companion",
+  title: "GitaComforts.me — Bhagavad Gita Companion",
   description:
     "Select your current emotion and receive a comforting Bhagavad Gita message.",
 };
@@ -28,6 +29,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${playfair.variable} font-sans antialiased`}
       >
+        <Analytics />
         {children}
       </body>
     </html>

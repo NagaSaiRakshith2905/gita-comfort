@@ -8,7 +8,6 @@
 - **Curated Verses**: Receive specific shlokas from the Bhagavad Gita that resonate with your feelings.
 - **Comforting Explanations**: Simple and brief explanations accompany each verse to provide immediate clarity and peace.
 - **Beautiful UI**: An aesthetic interface with themes that adapt to the selected emotion (colors, accents).
-- **API Endpoint**: Includes a built-in API to retrieve verses programmatically.
 
 ## Tech Stack
 
@@ -75,24 +74,6 @@ These are the exact sources used to prepare the local dataset files:
    [https://raw.githubusercontent.com/gita/gita/main/data/translation.json](https://raw.githubusercontent.com/gita/gita/main/data/translation.json)
 4. Commentary file (downloaded and inspected during generation flow):  
    [https://raw.githubusercontent.com/gita/gita/main/data/commentary.json](https://raw.githubusercontent.com/gita/gita/main/data/commentary.json)
-
-Notes:
-- The final `data-set/bhagavad_gita_700_english_v2.json` was built primarily from `verse.json` + English translation entries.
-- `simpleExplanation`, `briefExplanation`, `emotion`, and `keywords` were generated programmatically during dataset preparation.
-
-## API Usage
-
-The application exposes a simple API endpoint to get a message based on an emotion.
-
-**Endpoint:** `GET /api/message`
-
-**Query Parameters:**
-- `emotion` (required): The emotion state (e.g., `happy`, `sad`, `anger`).
-
-**Example Request:**
-```bash
-curl "http://localhost:3000/api/message?emotion=peace"
-```
 
 ## Contributing
 
